@@ -2,6 +2,7 @@
 package com.github.sahasatvik.game;
 
 import java.util.List;
+import java.util.ArrayList;
 import java.util.function.BinaryOperator;
 
 
@@ -16,34 +17,28 @@ public class MiniMax {
 		}
 	}
 	
-	public ScoredMove bestScoredMove;
-
 	public Move minimax (Game rootGame, int maxDepth) {
-		bestScoredMove = null;
-		minimax(rootGame, rootGame, maxDepth, 0);
-		return bestScoredMove.move;
+		return minimax(rootGame, rootGame, maxDepth, 0).move;
 	}
 
-	public int minimax (Game rootGame, Game currentGame, int maxDepth, int currentDepth) {
+	public ScoredMove minimax (Game rootGame, Game currentGame, int maxDepth, int currentDepth) {
 		List<Move> nextMoves = currentGame.getValidMoves();
 		currentDepth++;
 		
 		if (currentDepth == maxDepth || nextMoves.isEmpty() || currentGame.isOver())
-			return evaluate(currentGame, currentDepth);
+			return new ScoredMove(() -> (currentGame), evaluate(currentGame, currentDepth));
 		
 		BinaryOperator<ScoredMove> compareScoredMoves = (currentGame.getCurrentPlayer() == rootGame.getCurrentPlayer())
 								? ((a, b) -> (a.score > b.score ? a : b))
 								: ((a, b) -> (a.score < b.score ? a : b)); 
-		ScoredMove currentScoredMove;
-		int currentScore;
 
+		ScoredMove currentScoredMove, bestScoredMove;
+		currentScoredMove = bestScoredMove = minimax(rootGame, nextMoves.remove(0).getNewGame(), maxDepth, currentDepth);
 		for (Move move : nextMoves) {
-			currentScore = minimax(rootGame, move.getNewGame(), maxDepth, currentDepth);
-			currentScoredMove = new ScoredMove(move, currentScore);
-			bestScoredMove = compareScoredMoves.apply(currentScoredMove, bestScoredMove);
+			currentScoredMove = minimax(rootGame, move.getNewGame(), maxDepth, currentDepth);
+			bestScoredMove = compareScoredMoves.apply(bestScoredMove, currentScoredMove);
 		}
-
-		return bestScoredMove.score;
+		return bestScoredMove;
 	}
 
 	public int evaluate (Game game, int depth) {
