@@ -10,10 +10,20 @@ public class TicTacToeBoard extends Board<TicTacToePiece> {
 	public int winningSequenceSize;
 	public List<List<Cell>> winningSequences;
 	
+	public TicTacToeBoard (TicTacToeBoard parentCopy) {
+		super(parentCopy);
+		this.winningSequenceSize = parentCopy.winningSequenceSize;
+		this.winningSequences = parentCopy.winningSequences;
+	}
+	
 	public TicTacToeBoard (int rows, int columns, int winningSequenceSize) {
 		super(rows, columns, TicTacToePiece.EMPTY);
 		this.winningSequenceSize = winningSequenceSize;
 		this.winningSequences = BoardSequencer.getSequences(this, winningSequenceSize);
+	}
+
+	public TicTacToeBoard getCopy () {
+		return new TicTacToeBoard(this);
 	}
 
 	public boolean isMatchingWinningSequence (TicTacToePiece piece) {

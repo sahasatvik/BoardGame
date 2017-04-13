@@ -16,10 +16,6 @@ public class Board<T> {
 	}
 
 	public Board (int rows, int columns, T defaultItem) {
-		initBoard(rows, columns, defaultItem);
-	}
-
-	public void initBoard (int rows, int columns, T defaultItem) {
 		this.rows = rows;
 		this.columns = columns;
 		cells = new ArrayList<>();
@@ -30,6 +26,23 @@ public class Board<T> {
 			}
 			cells.add(row);
 		}
+	}
+	
+	public Board (Board<T> parentBoard) {
+		this.rows = parentBoard.rows;
+		this.columns = parentBoard.columns;
+		cells = new ArrayList<>();
+		for (int i = 0; i < parentBoard.rows; i++) {
+			ArrayList<Cell<T>> row = new ArrayList<>();
+			for (int j = 0; j < parentBoard.columns; j++) {
+				row.add(new Cell<T>(i, j, parentBoard.getItemAt(i, j)));
+			}
+			cells.add(row);
+		}
+	}
+
+	public Board<T> getCopy () {
+		return new Board<T>(this);
 	}
 
 	public T getItemAt (int row, int column) {
