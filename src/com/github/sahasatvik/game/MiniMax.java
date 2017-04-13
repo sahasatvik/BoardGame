@@ -2,7 +2,6 @@
 package com.github.sahasatvik.game;
 
 import java.util.List;
-import java.util.ArrayList;
 import java.util.function.BinaryOperator;
 
 
@@ -33,7 +32,7 @@ public class MiniMax {
 								: ((a, b) -> (a.score < b.score ? a : b)); 
 
 		ScoredMove currentScoredMove, bestScoredMove;
-		currentScoredMove = bestScoredMove = minimax(rootGame, nextMoves.remove(0).getNewGame(), maxDepth, currentDepth);
+		bestScoredMove = minimax(rootGame, nextMoves.remove(0).getNewGame(), maxDepth, currentDepth);
 		for (Move move : nextMoves) {
 			currentScoredMove = minimax(rootGame, move.getNewGame(), maxDepth, currentDepth);
 			bestScoredMove = compareScoredMoves.apply(bestScoredMove, currentScoredMove);
