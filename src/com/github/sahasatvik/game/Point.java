@@ -1,13 +1,11 @@
 
 package com.github.sahasatvik.game;
 
-public class Cell<T> {
+public class Point {
 	public int row;
 	public int column;
-	public T item;
-	public Cell (int row, int column, T item) {
+	public Point (int row, int column) {
 		this.row = row;
 		this.column = column;
-		this.item = item;
 	}
 }

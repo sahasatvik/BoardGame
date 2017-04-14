@@ -2,50 +2,37 @@
 package com.github.sahasatvik.game;
 
 import java.util.List;
+import java.util.ArrayList;
 import java.util.function.BinaryOperator;
 
 
-public class MiniMax {
+public class MiniMax<T extends Game<T>> {
 
-	public class ScoredMove {
-		public Move move;
+	public GameScorer<T> scorer;
+
+	public class GameTreeNode<T extends Game<T>> {
+		public T game;
 		public int score;
-		public ScoredMove (Move move, int score) {
-			this.move = move;
-			this.score = score;
+		public List<GameTreeNode<T>> nodes;
+		public GameTreeNode (T game) {
+			this.game = game;
+			nodes = new ArrayList<>();
 		}
 	}
 	
-	public Move minimax (Game rootGame, int maxDepth) {
-		return minimax(rootGame, rootGame, maxDepth, 0).move;
+	public Move<T> minimax (T rootGame, int maxDepth) {
+		return () -> minimax(rootGame).game;
 	}
 
-	public ScoredMove minimax (Game rootGame, Game currentGame, int maxDepth, int currentDepth) {
-		List<Move> nextMoves = currentGame.getValidMoves();
-		currentDepth++;
-		
-		if (currentDepth == maxDepth || nextMoves.isEmpty() || currentGame.isOver())
-			return new ScoredMove(() -> (currentGame), evaluate(currentGame, currentDepth));
-		
-		BinaryOperator<ScoredMove> compareScoredMoves = (currentGame.getCurrentPlayer() == rootGame.getCurrentPlayer())
-								? ((a, b) -> (a.score > b.score ? a : b))
-								: ((a, b) -> (a.score < b.score ? a : b)); 
+	public ScoredMove<T> minimax () {
+				
+	}
 
-		ScoredMove currentScoredMove, bestScoredMove;
-		bestScoredMove = minimax(rootGame, nextMoves.remove(0).getNewGame(), maxDepth, currentDepth);
-		for (Move move : nextMoves) {
-			currentScoredMove = minimax(rootGame, move.getNewGame(), maxDepth, currentDepth);
-			bestScoredMove = compareScoredMoves.apply(bestScoredMove, currentScoredMove);
+	public GameTreeNode<T> getGameTree (T game) {
+		GameTreeNode<T> head = new GameTreeNode<T>(game);
+		for (Move<T> move : game.getValidMoves()) {
+			head.nodes.add(new GameTreeNode<T>(move.getNewGame()));
 		}
-		return bestScoredMove;
-	}
-
-	public int evaluate (Game game, int depth) {
-		if (game.hasWon(game.getCurrentPlayer()))
-			return 10 - depth;
-		for (Player p : game.getPlayers())
-			if (p != game.getCurrentPlayer() && game.hasWon(p))
-				return depth - 10;
-		return 0;
+		return head;
 	}
 }
