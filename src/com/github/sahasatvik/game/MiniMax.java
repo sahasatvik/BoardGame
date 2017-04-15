@@ -21,16 +21,13 @@ public abstract class MiniMax<T extends Game<T>> {
 	
 	public Move<T> minimax (T rootGame, int maxDepth) {
 		GameTreeNode<T> root = createGameTree(rootGame, maxDepth);
-		System.out.print("\n" + root.children.size() + "Scores : ");
 		minimax(rootGame.getNextPlayer(), root, 0, maxDepth);
 		GameTreeNode<T> bestNode = root.children.remove(0);
 		for (GameTreeNode<T> node : root.children) {
-			System.out.print(node.score + " ");
 			if (node.score > bestNode.score) {
 				bestNode = node;
 			}
 		}
-		System.out.print(" > " + bestNode.score + "\n");
 		T bestGame = bestNode.game;
 		return () -> bestGame;
 	}
