@@ -12,5 +12,5 @@ public interface Game<T extends Game> {
 	public boolean isOver ();
 	public boolean makeMove (Move<T> m);
 	public List<Move<T>> getValidMoves ();
-	public Game getCopy ();
+	public T getCopy ();
 }

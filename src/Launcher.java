@@ -6,7 +6,7 @@ public class Launcher {
 	
 	public static void main (String[] args) {
 		Player<TicTacToeGame> crosses = new HumanPlayer();
-		Player<TicTacToeGame> noughts = new ComputerPlayer(6);
+		Player<TicTacToeGame> noughts = new ComputerPlayer(9);
 		TicTacToeGame game = new TicTacToeGame(3, 3, 3, crosses, noughts);
 		
 		for (Player<TicTacToeGame> p : game.getPlayers())
