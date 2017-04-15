@@ -9,23 +9,27 @@ import com.github.sahasatvik.game.Player;
 
 public class TicTacToeGame implements Game<TicTacToeGame> {
 	public TicTacToeBoard board;
-	public Map<Player<TicTacToeGame>, TicTacToePiece> playerMap;
+	public List<Player<TicTacToeGame>> players;
+	public List<TicTacToePiece> pieces;
 	public int currentPlayerId;
 
 	@SafeVarargs
 	public TicTacToeGame (int rows, int columns, int goal, Player<TicTacToeGame> ... players) {
 		board = new TicTacToeBoard(rows, columns, goal);
-		currentPlayerId = 0;
-		this.playerMap = new HashMap<>();
+		this.players = new ArrayList<>();
+		this.pieces = new ArrayList<>();
 		for (int i = 0; i < players.length; i++) {
-			this.playerMap.put(players[i], new TicTacToePiece(i));
+			this.players.add(players[i]);
+			this.pieces.add(new TicTacToePiece(i));
 		}
+		currentPlayerId = players.length - 1;
 	}
 
 	public TicTacToeGame (TicTacToeGame parentCopy) {
 		this.board = parentCopy.board.getCopy();
 		this.currentPlayerId = parentCopy.currentPlayerId;
-		this.playerMap = parentCopy.playerMap;
+		this.players = parentCopy.players;
+		this.pieces = parentCopy.pieces;
 	}
 
 	public TicTacToeGame getCopy () {
@@ -33,17 +37,25 @@ public class TicTacToeGame implements Game<TicTacToeGame> {
 	}
 
 	public boolean equals (TicTacToeGame g) {
-		if ((this.currentPlayerId != g.currentPlayerId) || (this.playerMap != g.playerMap))
+		if ((this.currentPlayerId != g.currentPlayerId) || (this.players != g.players) || (this.pieces != g.pieces))
 			return false;
 		return this.board.equals(g.board);
 	}
 
 	public List<TicTacToePiece> getPieces () {
-		return new ArrayList<TicTacToePiece>(playerMap.values());
+		return pieces;
+	}
+
+	public TicTacToePiece getPiece (Player<TicTacToeGame> p) {
+		return pieces.get(players.indexOf(p));
+	}
+
+	public Player<TicTacToeGame> getPlayer (TicTacToePiece t) {
+		return players.get(pieces.indexOf(t));
 	}
 
 	public List<Player<TicTacToeGame>> getPlayers () {
-		return new ArrayList<Player<TicTacToeGame>>(playerMap.keySet());
+		return players;
 	}
 
 	public int getPlayerCount () {
@@ -63,7 +75,7 @@ public class TicTacToeGame implements Game<TicTacToeGame> {
 	}
 
 	public boolean hasWon (Player<TicTacToeGame> p) {
-		return board.isMatchingWinningSequence(playerMap.get(p));
+		return board.isMatchingWinningSequence(getPiece(p));
 	}
 
 	public boolean isOver () {
@@ -79,7 +91,8 @@ public class TicTacToeGame implements Game<TicTacToeGame> {
 		TicTacToeGame newGame = move.getNewGame();
 		this.board = newGame.board.getCopy();
 		this.currentPlayerId = newGame.currentPlayerId;
-		this.playerMap = newGame.playerMap;
+		this.players = newGame.players;
+		this.pieces = newGame.pieces;
 		return true;
 	}
 
@@ -88,7 +101,7 @@ public class TicTacToeGame implements Game<TicTacToeGame> {
 			return false;
 		if (board.getItemAt(row, column) == TicTacToePiece.EMPTY) {
 			currentPlayerId = getNextPlayerId();
-			board.setItemAt(row, column, playerMap.get(getCurrentPlayer()));
+			board.setItemAt(row, column, pieces.get(currentPlayerId));
 			return true;
 		}
 		return false;

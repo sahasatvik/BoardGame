@@ -6,12 +6,15 @@ public class Launcher {
 	
 	public static void main (String[] args) {
 		Player<TicTacToeGame> crosses = new HumanPlayer();
-		Player<TicTacToeGame> noughts = new ComputerPlayer(10);
+		Player<TicTacToeGame> noughts = new ComputerPlayer(6);
 		TicTacToeGame game = new TicTacToeGame(3, 3, 3, crosses, noughts);
 		
+		for (Player<TicTacToeGame> p : game.getPlayers())
+			System.out.println(p + ", " + game.getPiece(p).id);
+
 		paint(game.board);
 		while (!game.isOver()) {
-			game.makeMove(game.getCurrentPlayer().getMove(game));
+			game.makeMove(game.getNextPlayer().getMove(game));
 			paint(game.board);
 		}
 	}
