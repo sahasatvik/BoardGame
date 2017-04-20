@@ -20,10 +20,11 @@ public abstract class MiniMax<T extends Game<T>> {
 	}
 	
 	public Move<T> minimax (T rootGame, int maxDepth) {
-		GameTreeNode<T> root = createGameTree(rootGame, maxDepth);
-		minimax(rootGame.getNextPlayer(), root, 0, maxDepth);
+		GameTreeNode<T> root = createGameTree(rootGame.getNextPlayer(), rootGame, 0, maxDepth);
 		GameTreeNode<T> bestNode = root.children.remove(0);
+		System.out.print("\nScores : ");
 		for (GameTreeNode<T> node : root.children) {
+			System.out.print(node.score + " ");
 			if (node.score > bestNode.score) {
 				bestNode = node;
 			}
@@ -32,6 +33,7 @@ public abstract class MiniMax<T extends Game<T>> {
 		return () -> bestGame;
 	}
 
+	/*
 	public void minimax (Player<T> maximizing, GameTreeNode<T> parent, int depth, int maxDepth) {
 		depth++;
 		boolean isMaximizing = maximizing == parent.game.getNextPlayer();
@@ -54,16 +56,28 @@ public abstract class MiniMax<T extends Game<T>> {
 			}
 			currentNode.children = null;
 		}
-	}
+	}*/
 
-	public GameTreeNode<T> createGameTree (T game, int maxDepth) {
-		maxDepth--;
+	public GameTreeNode<T> createGameTree (Player<T> maximizing, T game, int depth, int maxDepth) {
+		depth++;
 		GameTreeNode<T> newNode = new GameTreeNode<T>(game);
-		if (maxDepth == 0 || game.isOver()) {
+		boolean isMaximizing = (maximizing == game.getNextPlayer());
+		if (depth >= maxDepth || game.isOver()) {
+			newNode.score = isMaximizing? -evaluate(game, depth) : evaluate(game, depth);
+			System.out.print(" " + newNode.score);
 			return newNode;
 		}
-		for (Move<T> m : game.getValidMoves()) {
-			newNode.children.add(createGameTree(m.getNewGame(), maxDepth));
+		List<Move<T>> validMoves = game.getValidMoves();
+		for (Move<T> m : validMoves) {
+			GameTreeNode<T> child = createGameTree(maximizing, m.getNewGame(), depth, maxDepth);
+			newNode.children.add(child);
+		}
+		newNode.score = isMaximizing? Integer.MIN_VALUE : Integer.MAX_VALUE;
+		for (GameTreeNode<T> currentNode : newNode.children) {
+			if (((currentNode.score > newNode.score) && (isMaximizing))
+			 || ((currentNode.score < newNode.score) && (!isMaximizing))) {
+				newNode.score = currentNode.score;
+			}
 		}
 		return newNode;
 	}
