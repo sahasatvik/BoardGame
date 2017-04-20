@@ -6,8 +6,8 @@ public class Launcher {
 	
 	public static void main (String[] args) {
 		Player<TicTacToeGame> crosses = new HumanPlayer();
-		Player<TicTacToeGame> noughts = new ComputerPlayer(8);
-		TicTacToeGame game = new TicTacToeGame(3, 3, 3, crosses, noughts);
+		Player<TicTacToeGame> noughts = new ComputerPlayer(5);
+		TicTacToeGame game = new TicTacToeGame(5, 5, 4, crosses, noughts);
 
 		paint(game.board);
 		while (!game.isOver()) {
