@@ -23,17 +23,17 @@ public class ComputerPlayer extends MiniMax<TicTacToeGame> implements Player<Tic
 				inARow = BoardSequencer.getItemCount(game.board, row, game.getPiece(p));
 				if (inARow == game.board.goal) {
 					if (p == game.getCurrentPlayer()) {
-						return 1000 - depth;
+						return Integer.MAX_VALUE - depth;
 					} else {
-						return depth - 1000;
+						return depth - Integer.MAX_VALUE;
 					}
 					
 				}
 				if ((inARow + BoardSequencer.getItemCount(game.board, row, TicTacToePiece.EMPTY)) == game.board.goal) {
 					if (p == game.getCurrentPlayer()) {
-						score += (1000 >> (game.board.goal - inARow)) - depth;
+						score += (Integer.MAX_VALUE >> ((game.board.goal - inARow) * game.board.goal)) - depth;
 					} else {
-						score -= (1000 >> (game.board.goal - inARow)) + depth;
+						score -= (Integer.MAX_VALUE >> ((game.board.goal - inARow) * game.board.goal)) + depth;
 					}
 				}
 			}
