@@ -11,7 +11,7 @@ public abstract class MiniMax<T extends Game<T>> {
 
 	public class GameTreeNode<T extends Game<T>> {
 		public T game;
-		public Integer score;
+		public int score;
 		public List<GameTreeNode<T>> children;
 		public GameTreeNode (T game) {
 			this.game = game;
