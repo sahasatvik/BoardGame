@@ -4,8 +4,9 @@ package com.github.sahasatvik.game;
 import java.util.List;
 
 /**
- * Game is an interface which defines methods a class defining a game must implement
- * in order to use the {@link com.github.sahasatvik.game} framework.
+ * <code>Game</code> defines methods a class must implement in order to use the
+ * {@link com.github.sahasatvik.game} framework.
+ * <code>Game</code> outlines the basic behaviour of turn-based games.
  *
  * 	@author		Satvik Saha
  * 	@param	<T>	the type of Game object implemented
